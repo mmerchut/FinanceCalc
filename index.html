@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Finansowy</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; }
+        .container { max-width: 400px; margin: auto; padding: 20px; background: #fff; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+        input, select, button { width: 100%; padding: 10px; margin: 5px 0; }
+        h3 { margin-top: 20px; }
+        .result { background: #e0f7fa; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Kalkulator Finansowy</h2>
+        <label for="amount">Kwota (PLN):</label>
+        <input type="number" id="amount" placeholder="Wprowadź kwotę" required>
+
+        <label for="rate">Oprocentowanie (%):</label>
+        <input type="number" id="rate" placeholder="Wprowadź oprocentowanie" required>
+
+        <label for="time">Czas (lata):</label>
+        <input type="number" id="time" placeholder="Wprowadź czas w latach" required>
+
+        <label for="calcType">Typ obliczenia:</label>
+        <select id="calcType">
+            <option value="interest">Odsetki Proste</option>
+            <option value="loan">Raty Kredytu</option>
+        </select>
+
+        <button onclick="calculate()">Oblicz</button>
+
+        <h3>Wynik:</h3>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calculate() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const rate = parseFloat(document.getElementById('rate').value);
+            const time = parseFloat(document.getElementById('time').value);
+            const calcType = document.getElementById('calcType').value;
+
+            if (isNaN(amount) || isNaN(rate) || isNaN(time) || amount <= 0 || rate < 0 || time <= 0) {
+                alert('Proszę wprowadzić poprawne wartości!');
+                return;
+            }
+
+            let resultText = '';
+
+            if (calcType === 'interest') {
+                const interest = (amount * rate * time) / 100;
+                resultText = `Odsetki: ${interest.toFixed(2)} PLN`;
+            } else if (calcType === 'loan') {
+                const monthlyRate = rate / 100 / 12;
+                const months = time * 12;
+                const monthlyPayment = (amount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
+                const totalCost = monthlyPayment * months;
+                resultText = `Miesięczna rata: ${monthlyPayment.toFixed(2)} PLN<br>
+                              Całkowity koszt kredytu: ${totalCost.toFixed(2)} PLN`;
+            }
+
+            document.getElementById('result').innerHTML = resultText;
+        }
+    </script>
+</body>
+</html>
